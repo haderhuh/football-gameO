@@ -1,0 +1,457 @@
+[
+  {
+    "id": 1,
+    "name": "ليونيل ميسي",
+    "club": "برشلونة",
+    "country": "الأرجنتين",
+    "position": "RW",
+    "rating": 93,
+    "price": 900,
+    "image": "https://dummyimage.com/120x160/004d98/ffffff&text=Barca+10"
+  },
+  {
+    "id": 2,
+    "name": "كريستيانو رونالدو",
+    "club": "مانشستر يونايتد",
+    "country": "البرتغال",
+    "position": "ST",
+    "rating": 91,
+    "price": 880,
+    "image": "https://dummyimage.com/120x160/dd0000/ffffff&text=MU+7"
+  },
+  {
+    "id": 3,
+    "name": "نيمار جونيور",
+    "club": "باريس سان جيرمان",
+    "country": "البرازيل",
+    "position": "LW",
+    "rating": 90,
+    "price": 860,
+    "image": "https://dummyimage.com/120x160/004170/ffffff&text=PSG+10"
+  },
+  {
+    "id": 4,
+    "name": "محمد صلاح",
+    "club": "ليفربول",
+    "country": "مصر",
+    "position": "RW",
+    "rating": 90,
+    "price": 850,
+    "image": "https://dummyimage.com/120x160/c8102e/ffffff&text=LIV+11"
+  },
+  {
+    "id": 5,
+    "name": "كيفين دي بروين",
+    "club": "مانشستر سيتي",
+    "country": "بلجيكا",
+    "position": "CAM",
+    "rating": 91,
+    "price": 840,
+    "image": "https://dummyimage.com/120x160/6caee0/ffffff&text=MCI+17"
+  },
+  {
+    "id": 6,
+    "name": "إيرلينغ هالاند",
+    "club": "مانشستر سيتي",
+    "country": "النرويج",
+    "position": "ST",
+    "rating": 91,
+    "price": 280
+  },
+  {
+    "id": 7,
+    "name": "روبرت ليفاندوفسكي",
+    "club": "برشلونة",
+    "country": "بولندا",
+    "position": "ST",
+    "rating": 90,
+    "price": 240
+  },
+  {
+    "id": 8,
+    "name": "نيمار جونيور",
+    "club": "الهلال",
+    "country": "البرازيل",
+    "position": "LW",
+    "rating": 87,
+    "price": 180
+  },
+  {
+    "id": 9,
+    "name": "كيفن دي بروين",
+    "club": "مانشستر سيتي",
+    "country": "بلجيكا",
+    "position": "CAM",
+    "rating": 90,
+    "price": 230
+  },
+  {
+    "id": 10,
+    "name": "فيرجيل فان دايك",
+    "club": "ليفربول",
+    "country": "هولندا",
+    "position": "CB",
+    "rating": 88,
+    "price": 190
+  },
+  {
+    "id": 11,
+    "name": "تير شتيغن",
+    "club": "برشلونة",
+    "country": "ألمانيا",
+    "position": "GK",
+    "rating": 88,
+    "price": 180
+  },
+  {
+    "id": 12,
+    "name": "ساديو ماني",
+    "club": "النصر",
+    "country": "السنغال",
+    "position": "LW",
+    "rating": 86,
+    "price": 160
+  },
+  {
+    "id": 13,
+    "name": "هاري كين",
+    "club": "بايرن ميونخ",
+    "country": "إنجلترا",
+    "position": "ST",
+    "rating": 89,
+    "price": 210
+  },
+  {
+    "id": 14,
+    "name": "لوكا مودريتش",
+    "club": "ريال مدريد",
+    "country": "كرواتيا",
+    "position": "CM",
+    "rating": 87,
+    "price": 170
+  },
+  {
+    "id": 15,
+    "name": "توني كروس",
+    "club": "ريال مدريد",
+    "country": "ألمانيا",
+    "position": "CM",
+    "rating": 86,
+    "price": 160
+  },
+  {
+    "id": 16,
+    "name": "سيرجيو راموس",
+    "club": "إشبيلية",
+    "country": "إسبانيا",
+    "position": "CB",
+    "rating": 83,
+    "price": 130
+  },
+  {
+    "id": 17,
+    "name": "رياض محرز",
+    "club": "الأهلي",
+    "country": "الجزائر",
+    "position": "RW",
+    "rating": 85,
+    "price": 150
+  },
+  {
+    "id": 18,
+    "name": "بيير إيمريك أوباميانج",
+    "club": "مارسيليا",
+    "country": "الغابون",
+    "position": "ST",
+    "rating": 83,
+    "price": 130
+  },
+  {
+    "id": 19,
+    "name": "تيبو كورتوا",
+    "club": "ريال مدريد",
+    "country": "بلجيكا",
+    "position": "GK",
+    "rating": 90,
+    "price": 230
+  },
+  {
+    "id": 20,
+    "name": "جيانلويجي دوناروما",
+    "club": "باريس سان جيرمان",
+    "country": "إيطاليا",
+    "position": "GK",
+    "rating": 87,
+    "price": 170
+  },
+  {
+    "id": 21,
+    "name": "رودري",
+    "club": "مانشستر سيتي",
+    "country": "إسبانيا",
+    "position": "CDM",
+    "rating": 88,
+    "price": 190
+  },
+  {
+    "id": 22,
+    "name": "فينيسيوس جونيور",
+    "club": "ريال مدريد",
+    "country": "البرازيل",
+    "position": "LW",
+    "rating": 91,
+    "price": 270
+  },
+  {
+    "id": 23,
+    "name": "فيل فودن",
+    "club": "مانشستر سيتي",
+    "country": "إنجلترا",
+    "position": "CAM",
+    "rating": 87,
+    "price": 180
+  },
+  {
+    "id": 24,
+    "name": "جودي بيلينجهام",
+    "club": "ريال مدريد",
+    "country": "إنجلترا",
+    "position": "CM",
+    "rating": 88,
+    "price": 200
+  },
+  {
+    "id": 25,
+    "name": "رافائيل لياو",
+    "club": "ميلان",
+    "country": "البرتغال",
+    "position": "LW",
+    "rating": 85,
+    "price": 150
+  },
+  {
+    "id": 26,
+    "name": "فرانكي دي يونج",
+    "club": "برشلونة",
+    "country": "هولندا",
+    "position": "CM",
+    "rating": 85,
+    "price": 150
+  },
+  {
+    "id": 27,
+    "name": "أنتونيو رودريجر",
+    "club": "ريال مدريد",
+    "country": "ألمانيا",
+    "position": "CB",
+    "rating": 87,
+    "price": 180
+  },
+  {
+    "id": 28,
+    "name": "روبن دياز",
+    "club": "مانشستر سيتي",
+    "country": "البرتغال",
+    "position": "CB",
+    "rating": 88,
+    "price": 190
+  },
+  {
+    "id": 29,
+    "name": "جواو كانسيلو",
+    "club": "الهلال",
+    "country": "البرتغال",
+    "position": "RB",
+    "rating": 84,
+    "price": 140
+  },
+  {
+    "id": 30,
+    "name": "برونو فرنانديز",
+    "club": "مانشستر يونايتد",
+    "country": "البرتغال",
+    "position": "CAM",
+    "rating": 86,
+    "price": 160
+  },
+  {
+    "id": 31,
+    "name": "بيدري",
+    "club": "برشلونة",
+    "country": "إسبانيا",
+    "position": "CM",
+    "rating": 85,
+    "price": 150
+  },
+  {
+    "id": 32,
+    "name": "ليساندرو مارتينيز",
+    "club": "مانشستر يونايتد",
+    "country": "الأرجنتين",
+    "position": "CB",
+    "rating": 84,
+    "price": 140
+  },
+  {
+    "id": 33,
+    "name": "كاسيميرو",
+    "club": "مانشستر يونايتد",
+    "country": "البرازيل",
+    "position": "CDM",
+    "rating": 85,
+    "price": 150
+  },
+  {
+    "id": 34,
+    "name": "جوشوا كيميش",
+    "club": "بايرن ميونخ",
+    "country": "ألمانيا",
+    "position": "RB",
+    "rating": 86,
+    "price": 160
+  },
+  {
+    "id": 35,
+    "name": "أنطوان جريزمان",
+    "club": "أتلتيكو مدريد",
+    "country": "فرنسا",
+    "position": "CAM",
+    "rating": 86,
+    "price": 160
+  },
+  {
+    "id": 36,
+    "name": "جيمس ميلنر",
+    "club": "برايتون",
+    "country": "إنجلترا",
+    "position": "CM",
+    "rating": 78,
+    "price": 70
+  },
+  {
+    "id": 37,
+    "name": "جان لوكا فاشيا",
+    "club": "روما",
+    "country": "إيطاليا",
+    "position": "LB",
+    "rating": 77,
+    "price": 65
+  },
+  {
+    "id": 38,
+    "name": "لويس سواريز",
+    "club": "إنتر ميامي",
+    "country": "أوروغواي",
+    "position": "ST",
+    "rating": 82,
+    "price": 120
+  },
+  {
+    "id": 39,
+    "name": "دايفد دي خيا",
+    "club": "بدون نادٍ",
+    "country": "إسبانيا",
+    "position": "GK",
+    "rating": 83,
+    "price": 130
+  },
+  {
+    "id": 40,
+    "name": "ماركو روزي",
+    "club": "أتلانتا",
+    "country": "إيطاليا",
+    "position": "CM",
+    "rating": 76,
+    "price": 60
+  },
+  {
+    "id": 41,
+    "name": "ألبيرتو مورينو",
+    "club": "فياريال",
+    "country": "إسبانيا",
+    "position": "LB",
+    "rating": 79,
+    "price": 80
+  },
+  {
+    "id": 42,
+    "name": "ألكسندر سورلوث",
+    "club": "فياريال",
+    "country": "النرويج",
+    "position": "ST",
+    "rating": 81,
+    "price": 100
+  },
+  {
+    "id": 43,
+    "name": "كرستوف بياتك",
+    "club": "إسطنبول باشاك شهير",
+    "country": "بولندا",
+    "position": "ST",
+    "rating": 79,
+    "price": 75
+  },
+  {
+    "id": 44,
+    "name": "عمر المرموش",
+    "club": "فرانكفورت",
+    "country": "مصر",
+    "position": "RM",
+    "rating": 75,
+    "price": 55
+  },
+  {
+    "id": 45,
+    "name": "سيرجينو ديست",
+    "club": "آيندهوفن",
+    "country": "أمريكا",
+    "position": "RB",
+    "rating": 80,
+    "price": 85
+  },
+  {
+    "id": 46,
+    "name": "جواو فيليكس",
+    "club": "برشلونة",
+    "country": "البرتغال",
+    "position": "CF",
+    "rating": 84,
+    "price": 140
+  },
+  {
+    "id": 47,
+    "name": "حكيم زياش",
+    "club": "جالاتا سراي",
+    "country": "المغرب",
+    "position": "RW",
+    "rating": 82,
+    "price": 120
+  },
+  {
+    "id": 48,
+    "name": "بيير كالولو",
+    "club": "ليون",
+    "country": "فرنسا",
+    "position": "CB",
+    "rating": 79,
+    "price": 80
+  },
+  {
+    "id": 49,
+    "name": "أنخيل كوريا",
+    "club": "أتلتيكو مدريد",
+    "country": "الأرجنتين",
+    "position": "RW",
+    "rating": 82,
+    "price": 120
+  },
+  {
+    "id": 50,
+    "name": "سمير هاندانوفيتش",
+    "club": "إنتر ميلان",
+    "country": "سلوفينيا",
+    "position": "GK",
+    "rating": 84,
+    "price": 140
+  }
+]

@@ -1,0 +1,163 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="jumbotron p-5 rounded bg-primary bg-opacity-25 mb-4 text-center">
+            <h1 class="display-4">أهلا بك في عالم نجوم الكرة!</h1>
+            <p class="lead">اجمع بطاقات أفضل لاعبي كرة القدم في العالم</p>
+            <hr class="my-4">
+            <p>افتح البكجات، اجمع اللاعبين، وقم ببناء فريقك المثالي</p>
+            <div class="coins-display mb-3 fs-4">
+                <i class="fas fa-coins text-warning"></i> رصيدك: <span id="current-coins">{{ coins }}</span> عملة
+            </div>
+            <a href="{{ url_for('my_players') }}" class="btn btn-success btn-lg">
+                <i class="fas fa-user-friends"></i> شاهد لاعبيك
+            </a>
+        </div>
+        
+        {% if error %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ error }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<h2 class="text-center mb-4">
+    <i class="fas fa-shopping-cart"></i> 
+    البكجات المتاحة
+</h2>
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for pack in packs %}
+    <div class="col">
+        <div class="card pack-card h-100 bg-dark border-primary">
+            <div class="pack-image-container">
+                <img src="{{ pack.image }}" class="card-img-top pack-image" alt="{{ pack.name }}">
+                <div class="pack-overlay">
+                    <div class="pack-rating">{{ pack.price }} <i class="fas fa-coins text-warning"></i></div>
+                </div>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">{{ pack.name }}</h5>
+                <p class="card-text">{{ pack.description }}</p>
+                <div class="d-grid">
+                    <a href="{{ url_for('open_pack', pack_name=pack.name) }}" 
+                       class="btn btn-primary {% if coins < pack.price %}disabled{% endif %}"
+                       {% if coins < pack.price %}disabled title="لا تملك عملات كافية"{% endif %}>
+                        <i class="fas fa-shopping-cart me-2"></i>
+                        افتح البكج ({{ pack.price }} <i class="fas fa-coins text-warning"></i>)
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% if special_packs %}
+<div class="legendary-title-container text-center mt-5 mb-4">
+    <h2 class="legendary-title">
+        <i class="fas fa-crown text-warning me-2"></i> 
+        البكجات الخاصة والأسطورية
+        <i class="fas fa-crown text-warning ms-2"></i>
+    </h2>
+    <div class="legendary-subtitle">فرصة للحصول على لاعبين أسطوريين نادرين!</div>
+</div>
+
+<style>
+    .legendary-title-container {
+        position: relative;
+        padding: 20px 0;
+    }
+    
+    .legendary-title {
+        display: inline-block;
+        position: relative;
+        color: gold;
+        text-shadow: 0 0 5px crimson, 0 0 10px purple;
+        font-weight: bold;
+        z-index: 1;
+    }
+    
+    .legendary-subtitle {
+        color: #ffb142;
+        font-size: 1.2rem;
+        margin-top: 10px;
+    }
+</style>
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for pack in special_packs %}
+    <div class="col">
+        <div class="card pack-card h-100 bg-dark border-warning">
+            <div class="pack-image-container">
+                <img src="{{ pack.image }}" class="card-img-top pack-image" alt="{{ pack.name }}">
+                <div class="pack-overlay special-overlay">
+                    <div class="pack-rating special-rating">{{ pack.price }} <i class="fas fa-coins text-warning"></i></div>
+                </div>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">{{ pack.name }}</h5>
+                <p class="card-text">{{ pack.description }}</p>
+                <div class="d-grid">
+                    <a href="{{ url_for('open_legendary', pack_name=pack.name) }}" 
+                       class="btn btn-warning {% if coins < pack.price %}disabled{% endif %}"
+                       {% if coins < pack.price %}disabled title="لا تملك عملات كافية"{% endif %}>
+                        <i class="fas fa-crown me-2"></i>
+                        افتح البكج الخاص ({{ pack.price }} <i class="fas fa-coins text-warning"></i>)
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Stadium Background -->
+<div class="stadium-background mt-5">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h2 class="text-light">ابنِ فريقك الأسطوري</h2>
+                <p class="text-light">اجمع أفضل اللاعبين من البكجات المميزة وشكّل أقوى التشكيلات الممكنة.</p>
+                <a href="{{ url_for('my_players') }}" class="btn btn-success">
+                    <i class="fas fa-users me-2"></i> إدارة الفريق
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+    .stadium-background {
+        background-image: url('https://pixabay.com/get/g8088533309e302d12c77242ed72dd391208f1d9f0877ab1446780463bc93e6d278fe673532e4fe2b6a9563a2da5bde263b4e974cbb7e159b716dd83a13ca37dd_1280.jpg');
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .stadium-background::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 1;
+    }
+
+    .stadium-background .container {
+        position: relative;
+        z-index: 2;
+    }
+</style>
+{% endblock %}

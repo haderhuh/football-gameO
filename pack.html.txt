@@ -1,0 +1,280 @@
+{% extends 'layout.html' %}
+
+{% block extra_head %}
+<style>
+    .pack-opening-container {
+        perspective: 1000px;
+        min-height: 80vh;
+        position: relative;
+        background-image: url('https://pixabay.com/get/gbd7857bd09cf160214adf30ebc1f2e2a78b01eae43ba6190601643c31240d58677420772f823b4f84983c99d9aba910528a92a66c33b96f64659d9bde53d4dd9_1280.jpg');
+        background-size: cover;
+        background-position: center;
+        padding: 2rem 0;
+        border-radius: 15px;
+    }
+
+    .pack-opening-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 0;
+        border-radius: 15px;
+    }
+    
+    /* Legendary Pack Styles */
+    .legendary-pack {
+        background-image: url('https://pixabay.com/get/g8d9ac7d6cb9e2c4bf8d8bef329e8f5fc2b01e22e6a8a55ff9fff68b7d19ab3878c5da17ab62a0ad3ef09cc1aa25a8dd1290b232cbee0249e7ef8f6d05b3053da_1280.jpg');
+    }
+    
+    .legendary-pack::before {
+        background: rgba(44, 0, 48, 0.7);
+    }
+    
+    .legendary-badge {
+        background: linear-gradient(135deg, #ffb300, #ff5722);
+        color: white;
+        font-weight: bold;
+        padding: 8px 15px;
+        border-radius: 20px;
+        display: inline-block;
+        margin-bottom: 10px;
+        box-shadow: 0 0 15px rgba(255, 179, 0, 0.7);
+        animation: pulse 2s infinite;
+    }
+    
+    .legendary-img {
+        border: 3px solid gold;
+        box-shadow: 0 0 20px gold;
+        transform: scale(1.1);
+    }
+    
+    @keyframes pulse {
+        0% { box-shadow: 0 0 15px rgba(255, 179, 0, 0.7); }
+        50% { box-shadow: 0 0 25px rgba(255, 179, 0, 0.9); }
+        100% { box-shadow: 0 0 15px rgba(255, 179, 0, 0.7); }
+    }
+
+    .pack-content {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .player-card {
+        width: 200px;
+        height: 300px;
+        margin: 0 auto;
+        position: relative;
+        transition: transform 0.6s;
+        transform-style: preserve-3d;
+        opacity: 0;
+        transform: rotateY(180deg) scale(0.8);
+    }
+    
+    .player-card.revealed {
+        opacity: 1;
+        transform: rotateY(0) scale(1);
+    }
+    
+    .player-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        border-radius: 15px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+        background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+        overflow: hidden;
+    }
+    
+    .player-card-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+        padding: 1rem;
+        color: white;
+    }
+    
+    .player-rating {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+    
+    .player-position {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .player-name {
+        font-size: 1.2rem;
+        margin-top: 0.5rem;
+        font-weight: bold;
+    }
+    
+    .player-club, .player-country {
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .player-image {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto;
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .player-image i {
+        font-size: 40px;
+        color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .rating-70-79 {
+        background: linear-gradient(135deg, #616161, #9bc5c3);
+    }
+    
+    .rating-80-89 {
+        background: linear-gradient(135deg, #134e5e, #71b280);
+    }
+    
+    .rating-90-100 {
+        background: linear-gradient(135deg, #b21f1f, #fdbb2d);
+    }
+    
+    .pack-info {
+        text-align: center;
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .pack-name {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    
+    .pack-image {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 15px;
+        margin: 0 auto;
+        display: block;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    .card-shine {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, 
+            rgba(255,255,255,0) 0%,
+            rgba(255,255,255,0.2) 25%, 
+            rgba(255,255,255,0.2) 50%, 
+            rgba(255,255,255,0) 100%);
+        opacity: 0;
+        transition: opacity 0.3s;
+        pointer-events: none;
+    }
+    
+    .player-card:hover .card-shine {
+        opacity: 0.5;
+    }
+    
+    #confetti-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 100;
+        pointer-events: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="pack-opening-container {% if legendary %}legendary-pack{% endif %}">
+    <div class="pack-content">
+        <div class="pack-info mb-4">
+            <div class="pack-name text-white">{{ pack.name }}</div>
+            <img src="{{ pack.image }}" alt="{{ pack.name }}" class="pack-image mb-2 {% if legendary %}legendary-img{% endif %}">
+            {% if legendary %}
+            <div class="legendary-badge">
+                <i class="fas fa-crown me-2"></i> بكج أسطوري
+            </div>
+            <p class="text-white">ستحصل على 3 لاعبين أسطوريين!</p>
+            {% else %}
+            <p class="text-white">ستحصل على 8 لاعبين!</p>
+            {% endif %}
+        </div>
+        
+        <div class="text-center mb-4">
+            <button id="reveal-all" class="btn btn-lg {% if legendary %}btn-danger{% else %}btn-warning{% endif %}">
+                <i class="fas fa-box-open me-2"></i> فتح جميع البطاقات
+            </button>
+        </div>
+        
+        <div class="row row-cols-1 row-cols-md-3 row-cols-lg-5 g-4">
+            {% for player in players %}
+            <div class="col">
+                <div class="player-card" id="card-{{ loop.index }}" data-rating="{{ player.rating }}">
+                    <div class="player-card-inner 
+                              {% if player.rating < 80 %}rating-70-79
+                              {% elif player.rating < 90 %}rating-80-89
+                              {% else %}rating-90-100{% endif %}">
+                        <div class="card-shine"></div>
+                        <div class="player-card-content">
+                            <div>
+                                <div class="player-rating">{{ player.rating }}</div>
+                                <div class="player-position">{{ player.position }}</div>
+                            </div>
+                            <div class="player-image">
+                                {% if player.image %}
+                                <img src="{{ player.image }}" alt="{{ player.name }}" class="rounded" style="width: 80px; height: 80px; object-fit: cover;">
+                                {% else %}
+                                <i class="fas fa-user"></i>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <div class="player-name">{{ player.name }}</div>
+                                <div class="player-club">{{ player.club }}</div>
+                                <div class="player-country">{{ player.country }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="{{ url_for('index') }}" class="btn btn-primary me-2">
+                <i class="fas fa-shopping-cart me-2"></i> المزيد من البكجات
+            </a>
+            <a href="{{ url_for('my_players') }}" class="btn btn-success">
+                <i class="fas fa-users me-2"></i> عرض لاعبيك
+            </a>
+        </div>
+    </div>
+</div>
+
+<canvas id="confetti-canvas"></canvas>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/confetti-js@0.0.18/dist/index.min.js"></script>
+<script src="{{ url_for('static', filename='js/pack.js') }}"></script>
+{% endblock %}

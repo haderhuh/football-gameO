@@ -1,0 +1,316 @@
+# صانع اللعبة: حيدر عيسى
+
+from flask import Flask, render_template, redirect, url_for, session, jsonify, request
+import json
+import random
+import os
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.DEBUG)
+
+app = Flask(__name__)
+app.secret_key = os.environ.get("SESSION_SECRET", "default_secret_key")
+
+# تحميل جميع البكجات
+try:
+    with open('players.json', 'r', encoding='utf-8') as f:
+        all_players = json.load(f)
+except FileNotFoundError:
+    logging.error("players.json file not found!")
+    all_players = []
+
+# إضافة خاصية النادر (rare) للاعبين
+for player in all_players:
+    # اعتبر اللاعبين بتقييم فوق 85 نادرين
+    player['rare'] = player.get('rating', 0) >= 85
+    # استخدم اسم الفريق بدلاً من النادي إذا لم يكن متوفراً
+    if 'team' not in player and 'club' in player:
+        player['team'] = player['club']
+    elif 'team' not in player:
+        player['team'] = 'فريق غير معروف'
+
+# قائمة بأسماء البكجات مع صور وأوصاف
+packs = [
+    {"name": "بكج عالمي", "price": 100, "description": "تشكيلة متنوعة من اللاعبين العالميين", "image": "https://pixabay.com/get/g592d1d9722dedac06f3d4719fa072d36b060f2825f626647417400b77ecbbbbf46212a425b99750bde4f5fe49a2cd4fddbe6355f88e85abd66390c4f666182f3_1280.jpg"},
+    {"name": "بكج أسبوعي", "price": 150, "description": "أفضل اللاعبين هذا الأسبوع", "image": "https://pixabay.com/get/g2593cb161f7c1da2bccc2e4ea1a3af6f57fa7ae9fabb0b65a57faf082631e3faf25699dfa2f8e07eb9ec22bc9dad80a2a439f99ee48a458064570441469cbfe4_1280.jpg"},
+    {"name": "عقود ترشيح", "price": 200, "description": "فرصة للحصول على أفضل اللاعبين", "image": "https://pixabay.com/get/gb6e84943d655f5b47d43f373f30fb570e11c38dda7bf2a8e23acea49aaed888beec81713c5463561dfa00a82a0e074d765862893e2eb5a6d04f2472e9ff78709_1280.jpg"},
+    {"name": "بكج القوة", "price": 250, "description": "لاعبين ذوي تقييمات عالية", "image": "https://pixabay.com/get/gfc6e6cd5fd3cdf840ab90e7d675b1a95d61f753d130c476f0735e2d13e30a5f48e46c037f4b523bc89b283396317fd8650f349ae231da64fe9af2fafcf00173a_1280.jpg"},
+    {"name": "بكج ريال مدريد", "price": 300, "description": "لاعبين من نادي ريال مدريد", "image": "https://pixabay.com/get/gbd7857bd09cf160214adf30ebc1f2e2a78b01eae43ba6190601643c31240d58677420772f823b4f84983c99d9aba910528a92a66c33b96f64659d9bde53d4dd9_1280.jpg"},
+    {"name": "بكج برشلونة", "price": 300, "description": "لاعبين من نادي برشلونة", "image": "https://pixabay.com/get/g9fbb07d7b3faad22ea28a5da1230b684aaf9bc151448732d4bae738c9be9d8ab4961e26a0be9871f22900b96cd5240a4a293600440167a4fec198dac694d4098_1280.jpg"}
+]
+
+# البكجات الخاصة مع صور وأوصاف
+special_packs = [
+    {"name": "بكج الأساطير", "price": 1000, "description": "يحتوي على أبرز اللاعبين وبطاقات مميزة!", "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSu4kOLY38l7_Nny6_pxI26UOwGpUguO72SAw&s"},
+    {"name": "بكج بايرن ميونخ", "price": 200, "description": "لاعبي فريق بايرن ميونخ", "image": "https://pixabay.com/get/gb6e84943d655f5b47d43f373f30fb570e11c38dda7bf2a8e23acea49aaed888beec81713c5463561dfa00a82a0e074d765862893e2eb5a6d04f2472e9ff78709_1280.jpg"},
+    {"name": "بكج الأرجنتين", "price": 200, "description": "لاعبو منتخب الأرجنتين", "image": "https://pixabay.com/get/gfc6e6cd5fd3cdf840ab90e7d675b1a95d61f753d130c476f0735e2d13e30a5f48e46c037f4b523bc89b283396317fd8650f349ae231da64fe9af2fafcf00173a_1280.jpg"}
+]
+
+# تقسيم اللاعبين حسب البكجات العادية
+player_packs = {
+    "بكج عالمي": all_players[:250] if len(all_players) >= 250 else all_players,
+    "بكج أسبوعي": all_players[250:500] if len(all_players) >= 500 else all_players[:100],
+    "عقود ترشيح": all_players[500:750] if len(all_players) >= 750 else all_players[:100],
+    "بكج القوة": all_players[750:1000] if len(all_players) >= 1000 else all_players[:100],
+    "بكج ريال مدريد": [p for p in all_players if p.get('club', '') == 'ريال مدريد' or p.get('team', '') == 'ريال مدريد'],
+    "بكج برشلونة": [p for p in all_players if p.get('club', '') == 'برشلونة' or p.get('team', '') == 'برشلونة']
+}
+
+# البكجات الخاصة بمحتوى مميز
+special_player_packs = {
+    "بكج الأساطير": [p for p in all_players if p.get('rating', 0) >= 90],
+    "بكج بايرن ميونخ": [p for p in all_players if p.get('club', '') == 'بايرن ميونخ' or p.get('team', '') == 'بايرن ميونخ'],
+    "بكج الأرجنتين": [p for p in all_players if p.get('country', '') == 'الأرجنتين']
+}
+
+# لاعبين أسطوريين نادرين جداً 
+legendary_players = [
+    # نادرون جداً (فئة A) - سعر 750+
+    {"id": 9991, "name": "ليونيل ميسي (أسطورة)", "club": "الأرجنتين", "country": "الأرجنتين", "position": "RW", "rating": 99, "price": 10000, "image": "https://dummyimage.com/120x160/ffdc00/000000&text=Messi+Legend", "rare": True, "team": "الأرجنتين", "tier": "S"},
+    {"id": 9992, "name": "كريستيانو رونالدو (أسطورة)", "club": "البرتغال", "country": "البرتغال", "position": "ST", "rating": 99, "price": 10000, "image": "https://dummyimage.com/120x160/8a0303/ffffff&text=CR7+Legend", "rare": True, "team": "البرتغال", "tier": "S"},
+    {"id": 9993, "name": "بيليه", "club": "البرازيل", "country": "البرازيل", "position": "CF", "rating": 99, "price": 10000, "image": "https://dummyimage.com/120x160/009b3a/ffdf00&text=Pele+10", "rare": True, "team": "البرازيل", "tier": "S"},
+    
+    # متوسطون (فئة B) - سعر 650-749
+    {"id": 9994, "name": "زين الدين زيدان", "club": "فرنسا", "country": "فرنسا", "position": "CAM", "rating": 96, "price": 700, "image": "https://dummyimage.com/120x160/0055a4/ffffff&text=Zidane+10", "rare": True, "team": "فرنسا", "tier": "A"},
+    {"id": 9995, "name": "رونالدينهو", "club": "البرازيل", "country": "البرازيل", "position": "CAM", "rating": 95, "price": 690, "image": "https://dummyimage.com/120x160/009b3a/ffdf00&text=Ronaldinho", "rare": True, "team": "البرازيل", "tier": "A"},
+    {"id": 9996, "name": "دييغو مارادونا", "club": "الأرجنتين", "country": "الأرجنتين", "position": "CAM", "rating": 97, "price": 730, "image": "https://dummyimage.com/120x160/75aadb/ffffff&text=Maradona", "rare": True, "team": "الأرجنتين", "tier": "A"},
+    
+    # عاديون (فئة C) - سعر أقل من 650
+    {"id": 9997, "name": "تيري هنري", "club": "فرنسا", "country": "فرنسا", "position": "ST", "rating": 93, "price": 600, "image": "https://dummyimage.com/120x160/0055a4/ffffff&text=Henry+14", "rare": True, "team": "فرنسا", "tier": "B"},
+    {"id": 9998, "name": "رونالدو (الظاهرة)", "club": "البرازيل", "country": "البرازيل", "position": "ST", "rating": 94, "price": 620, "image": "https://dummyimage.com/120x160/009b3a/ffdf00&text=R9", "rare": True, "team": "البرازيل", "tier": "B"},
+    {"id": 9999, "name": "باولو مالديني", "club": "إيطاليا", "country": "إيطاليا", "position": "CB", "rating": 92, "price": 580, "image": "https://dummyimage.com/120x160/009246/ffffff&text=Maldini", "rare": True, "team": "إيطاليا", "tier": "B"}
+]
+
+@app.route('/')
+def index():
+    if 'coins' not in session:
+        session['coins'] = 600
+        session['my_players'] = []
+    return render_template('index.html', coins=session['coins'], packs=packs, special_packs=special_packs)
+
+@app.route('/open/<pack_name>')
+def open_pack(pack_name):
+    # Find the selected pack
+    selected_pack = next((pack for pack in packs if pack["name"] == pack_name), None)
+    
+    if not selected_pack:
+        return redirect(url_for('index'))
+    
+    if session['coins'] < selected_pack["price"]:
+        return render_template('index.html', coins=session['coins'], packs=packs, special_packs=special_packs, error="لا تملك عملات كافية!")
+
+    session['coins'] -= selected_pack["price"]
+    
+    # Get players from the selected pack
+    if pack_name in player_packs and player_packs[pack_name]:
+        pack_players = player_packs[pack_name]
+        
+        # Separate rare and normal players
+        rare_players = [p for p in pack_players if p.get('rare', False)]
+        normal_players = [p for p in pack_players if not p.get('rare', False)]
+        
+        # Handle case where there aren't enough rare or normal players
+        if len(rare_players) < 3:
+            rare_players = rare_players + normal_players[:3-len(rare_players)]
+        if len(normal_players) < 5:
+            normal_players = normal_players + rare_players[:5-len(normal_players)]
+        
+        # Select 3 rare and 5 normal players
+        selected_rare = random.sample(rare_players, min(3, len(rare_players)))
+        selected_normal = random.sample(normal_players, min(5, len(normal_players)))
+        
+        selected_players = selected_rare + selected_normal
+    else:
+        # Fallback to ensure app doesn't crash if players.json is missing
+        selected_players = [
+            {"name": "Example Player", "club": "Example FC", "country": "Country", "position": "ST", "rating": 75, "price": 100, "rare": False}
+            for _ in range(8)
+        ]
+    
+    # Make sure to have 'id' field for each player for reference
+    for i, player in enumerate(selected_players):
+        if 'id' not in player:
+            player['id'] = random.randint(1000000, 9999999)
+    
+    if 'my_players' not in session:
+        session['my_players'] = []
+    
+    session['my_players'] += selected_players
+    session.modified = True
+    
+    return render_template('pack.html', players=selected_players, pack=selected_pack, coins=session['coins'], legendary=False)
+
+@app.route('/open_legend/<pack_name>')
+def open_legendary(pack_name):
+    # Find the selected special pack
+    selected_pack = next((pack for pack in special_packs if pack["name"] == pack_name), None)
+    
+    if not selected_pack:
+        return redirect(url_for('index'))
+    
+    price = selected_pack["price"]
+    if session['coins'] < price:
+        return render_template('index.html', coins=session['coins'], packs=packs, special_packs=special_packs, error="لا تملك عملات كافية!")
+
+    session['coins'] -= price
+    
+    # ستحدد نوع اللاعبين الأسطوريين الذين سيتم اختيارهم
+    selected_players = []
+    
+    # اختيار لاعب أسطوري من الفئة النادرة جداً (10% فرصة)
+    if random.random() < 0.1:
+        tier_s_players = [p for p in legendary_players if p.get('tier') == 'S']
+        if tier_s_players:
+            selected_players.append(random.choice(tier_s_players))
+    
+    # اختيار لاعب من الفئة المتوسطة (60% فرصة)
+    if random.random() < 0.6 or not selected_players:
+        tier_a_players = [p for p in legendary_players if p.get('tier') == 'A']
+        if tier_a_players:
+            selected_players.append(random.choice(tier_a_players))
+    
+    # إضافة لاعب من الفئة العادية (100% مضمون)
+    tier_b_players = [p for p in legendary_players if p.get('tier') == 'B'] 
+    if tier_b_players:
+        selected_players.append(random.choice(tier_b_players))
+    
+    # إذا لم يتم اختيار ما يكفي من اللاعبين، نختار من البكج المحدد
+    if pack_name in special_player_packs and len(selected_players) < 3:
+        pack_players = special_player_packs[pack_name]
+        pack_players = [p for p in pack_players if p.get('rating', 0) >= 85]  # نختار اللاعبين النادرين فقط
+        
+        # اختيار لاعبين إضافيين حتى نصل إلى 3 لاعبين
+        if pack_players and len(pack_players) > 0:
+            additional_needed = 3 - len(selected_players)
+            additional_players = random.sample(pack_players, min(additional_needed, len(pack_players)))
+            selected_players.extend(additional_players)
+    
+    # إذا ما زلنا لا نملك 3 لاعبين، نستخدم لاعبين نادرين عشوائيين
+    while len(selected_players) < 3:
+        rare_players = [p for p in all_players if p.get('rating', 0) >= 85]
+        if rare_players:
+            selected_players.append(random.choice(rare_players))
+        else:
+            # نستخدم لاعب وهمي فقط في حالة عدم وجود لاعبين
+            selected_players.append({
+                "name": "لاعب أسطوري", 
+                "club": "نادي الأساطير", 
+                "country": "العالم", 
+                "position": "ST", 
+                "rating": 90, 
+                "price": 500, 
+                "rare": True,
+                "id": random.randint(1000000, 9999999)
+            })
+    
+    # Make sure to have 'id' field for each player for reference
+    for i, player in enumerate(selected_players):
+        if 'id' not in player:
+            player['id'] = random.randint(1000000, 9999999)
+        
+        # تأكد من أن جميع اللاعبين مميزين بعلامة "rare"
+        player['rare'] = True
+    
+    # خلط اللاعبين قبل عرضهم للمستخدم
+    random.shuffle(selected_players)
+    
+    if 'my_players' not in session:
+        session['my_players'] = []
+    
+    session['my_players'] += selected_players
+    session.modified = True
+    
+    return render_template('pack.html', players=selected_players, pack=selected_pack, coins=session['coins'], legendary=True)
+
+@app.route('/sell/<player_id>')
+def sell(player_id):
+    if 'my_players' not in session:
+        return redirect(url_for('my_players'))
+        
+    player_id = str(player_id)  # Ensure player_id is a string for comparison
+    
+    for i, player in enumerate(session['my_players']):
+        if str(player.get('id', '')) == player_id:
+            player = session['my_players'].pop(i)
+            price = player.get('price', 50)  # Default price is 50 if not specified
+            session['coins'] += price
+            session.modified = True
+            break
+            
+    return redirect(url_for('my_players'))
+
+@app.route('/my_players')
+def my_players():
+    if 'my_players' not in session:
+        session['my_players'] = []
+    return render_template('my_players.html', players=session.get('my_players', []), coins=session.get('coins', 0))
+
+@app.route('/sell_all')
+def sell_all():
+    if 'my_players' not in session:
+        session['my_players'] = []
+        return redirect(url_for('my_players'))
+        
+    total = sum(p.get('price', 50) for p in session['my_players'])
+    session['coins'] += total
+    session['my_players'] = []
+    session.modified = True
+    
+    return redirect(url_for('my_players'))
+
+@app.route('/sell_non_rare')
+def sell_non_rare():
+    if 'my_players' not in session:
+        session['my_players'] = []
+        return redirect(url_for('my_players'))
+        
+    remaining_players = []
+    total = 0
+    
+    for p in session['my_players']:
+        if p.get('rare', False) or p.get('rating', 70) >= 85:  # Check both rare flag and rating
+            remaining_players.append(p)
+        else:
+            total += p.get('price', 50)
+            
+    session['my_players'] = remaining_players
+    session['coins'] += total
+    session.modified = True
+    
+    return redirect(url_for('my_players'))
+
+@app.route('/api/player_stats')
+def player_stats():
+    if 'my_players' not in session:
+        return jsonify({"error": "No players owned"})
+    
+    positions = {}
+    ratings = {"70-79": 0, "80-89": 0, "90-99": 0}
+    
+    for player in session['my_players']:
+        pos = player.get('position', 'Other')
+        positions[pos] = positions.get(pos, 0) + 1
+        
+        rating = player.get('rating', 0)
+        if 70 <= rating <= 79:
+            ratings["70-79"] += 1
+        elif 80 <= rating <= 89:
+            ratings["80-89"] += 1
+        elif 90 <= rating <= 99:
+            ratings["90-99"] += 1
+    
+    return jsonify({
+        "positions": positions,
+        "ratings": ratings
+    })
+
+@app.route('/add_coins')
+def add_coins():
+    """Dev route to add coins for testing"""
+    session['coins'] = session.get('coins', 0) + 500
+    session.modified = True
+    return redirect(url_for('index'))
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
